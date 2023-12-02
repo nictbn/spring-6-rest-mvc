@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -66,5 +67,22 @@ public class BeerServiceImpl implements BeerService {
     public Beer getBeerById(UUID id) {
         log.debug("Get BeerId in service was called with id: " + id);
         return beerMap.get(id);
+    }
+
+    @Override
+    public Beer save(Beer beer) {
+        Beer savedBeer = Beer.builder()
+                .id(UUID.randomUUID())
+                .createdDate(LocalDateTime.now())
+                .updateDate(LocalDateTime.now())
+                .version(beer.getVersion())
+                .beerName(beer.getBeerName())
+                .beerStyle(beer.getBeerStyle())
+                .quantityOnHand(beer.getQuantityOnHand())
+                .upc(beer.getUpc())
+                .price(beer.getPrice())
+                .build();
+        beerMap.put(savedBeer.getId(), savedBeer);
+        return savedBeer;
     }
 }
