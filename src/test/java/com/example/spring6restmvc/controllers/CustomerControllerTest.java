@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.example.spring6restmvc.controllers.CustomerController.CUSTOMER_PATH;
+import static com.example.spring6restmvc.controllers.CustomerController.CUSTOMER_PATH_ID;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -67,7 +68,7 @@ class CustomerControllerTest {
         Customer customer = customerServiceImpl.getAllCustomers().get(0);
         given(customerService.getCustomerById(customer.getId())).willReturn(customer);
 
-        mockMvc.perform(get(CUSTOMER_PATH + "/" + customer.getId())
+        mockMvc.perform(get(CUSTOMER_PATH_ID, customer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is(customer.getName())));
@@ -93,7 +94,7 @@ class CustomerControllerTest {
     void testUpdateCustomer() throws Exception {
         Customer customer = customerServiceImpl.getAllCustomers().get(0);
 
-        mockMvc.perform(put(CUSTOMER_PATH + "/" + customer.getId())
+        mockMvc.perform(put(CUSTOMER_PATH_ID, customer.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customer))
                         .accept(MediaType.APPLICATION_JSON))
@@ -107,7 +108,7 @@ class CustomerControllerTest {
     void testDeleteCustomer() throws Exception {
         Customer customer = customerServiceImpl.getAllCustomers().get(0);
 
-        mockMvc.perform(delete(CUSTOMER_PATH + "/" + customer.getId())
+        mockMvc.perform(delete(CUSTOMER_PATH_ID, customer.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         verify(customerService).deleteById(uuidArgumentCaptor.capture());
@@ -120,7 +121,7 @@ class CustomerControllerTest {
         Map<String, Object> customerMap = new HashMap<>();
         customerMap.put("name", "New Name");
 
-        mockMvc.perform(patch(CUSTOMER_PATH + "/" + customer.getId())
+        mockMvc.perform(patch(CUSTOMER_PATH_ID, customer.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerMap)))
                 .andExpect(status().isNoContent());
