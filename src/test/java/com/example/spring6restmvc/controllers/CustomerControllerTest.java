@@ -6,6 +6,8 @@ import com.example.spring6restmvc.services.CustomerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @WebMvcTest(CustomerController.class)
 class CustomerControllerTest {
@@ -34,6 +37,9 @@ class CustomerControllerTest {
 
     // Used only for having some data to test against
     CustomerServiceImpl customerServiceImpl;
+
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
 
     @BeforeEach
     void setUp() {
@@ -87,6 +93,18 @@ class CustomerControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(customerService).update(any(UUID.class), any(Customer.class));
+        verify(customerService).update(uuidArgumentCaptor.capture(), any(Customer.class));
+        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+    }
+
+    @Test
+    void testDeleteCustomer() throws Exception {
+        Customer customer = customerServiceImpl.getAllCustomers().get(0);
+
+        mockMvc.perform(delete("/api/v1/customer/" + customer.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        verify(customerService).deleteById(uuidArgumentCaptor.capture());
+        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 }
