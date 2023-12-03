@@ -9,4 +9,5 @@ public interface CustomerService {
     Customer getCustomerById(UUID id);
     List<Customer> getAllCustomers();
     Customer save(Customer customer);
+    void update(UUID customerId, Customer customer);
 }
