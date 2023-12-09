@@ -1,6 +1,6 @@
 package com.example.spring6restmvc.controllers;
 
-import com.example.spring6restmvc.model.Beer;
+import com.example.spring6restmvc.model.BeerDto;
 import com.example.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +22,8 @@ public class BeerController {
     private final BeerService beerService;
 
     @PatchMapping(BEER_PATH_ID)
-    public ResponseEntity patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
-        beerService.patch(beerId, beer);
+    public ResponseEntity patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDto beerDto) {
+        beerService.patch(beerId, beerDto);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
@@ -34,24 +34,24 @@ public class BeerController {
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
-        beerService.update(beerId, beer);
+    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDto beerDto) {
+        beerService.update(beerId, beerDto);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
     @PostMapping(BEER_PATH)
-    public ResponseEntity handlePost(@RequestBody Beer beer) {
-        Beer savedBeer = beerService.save(beer);
+    public ResponseEntity handlePost(@RequestBody BeerDto beerDto) {
+        BeerDto savedBeerDto = beerService.save(beerDto);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
+        headers.add("Location", "/api/v1/beer/" + savedBeerDto.getId().toString());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
     @GetMapping(BEER_PATH)
-    public List<Beer> listBeers() {
+    public List<BeerDto> listBeers() {
         return beerService.listBeers();
     }
 
     @GetMapping(BEER_PATH_ID)
-    public Beer getBeerById(@PathVariable("beerId") UUID id) {
+    public BeerDto getBeerById(@PathVariable("beerId") UUID id) {
         log.debug("Get beer by id in controller");
         return beerService.getBeerById(id).orElseThrow(NotFoundException::new);
     }

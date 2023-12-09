@@ -1,6 +1,6 @@
 package com.example.spring6restmvc.services;
 
-import com.example.spring6restmvc.model.Customer;
+import com.example.spring6restmvc.model.CustomerDto;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -10,10 +10,10 @@ import java.util.*;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    private Map<UUID, Customer> customerMap;
+    private Map<UUID, CustomerDto> customerMap;
 
     public CustomerServiceImpl() {
-        Customer customer1 = Customer.builder()
+        CustomerDto customerDto1 = CustomerDto.builder()
                 .id(UUID.randomUUID())
                 .name("Customer 1")
                 .version(1)
@@ -21,7 +21,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .updateDate(LocalDateTime.now())
                 .build();
 
-        Customer customer2 = Customer.builder()
+        CustomerDto customerDto2 = CustomerDto.builder()
                 .id(UUID.randomUUID())
                 .name("Customer 2")
                 .version(1)
@@ -29,7 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .updateDate(LocalDateTime.now())
                 .build();
 
-        Customer customer3 = Customer.builder()
+        CustomerDto customerDto3 = CustomerDto.builder()
                 .id(UUID.randomUUID())
                 .name("Customer 3")
                 .version(1)
@@ -38,38 +38,38 @@ public class CustomerServiceImpl implements CustomerService {
                 .build();
 
         customerMap = new HashMap<>();
-        customerMap.put(customer1.getId(), customer1);
-        customerMap.put(customer2.getId(), customer2);
-        customerMap.put(customer3.getId(), customer3);
+        customerMap.put(customerDto1.getId(), customerDto1);
+        customerMap.put(customerDto2.getId(), customerDto2);
+        customerMap.put(customerDto3.getId(), customerDto3);
     }
     @Override
-    public Optional<Customer> getCustomerById(UUID id) {
+    public Optional<CustomerDto> getCustomerById(UUID id) {
         return Optional.of(customerMap.get(id));
     }
 
     @Override
-    public List<Customer> getAllCustomers() {
+    public List<CustomerDto> getAllCustomers() {
         return new ArrayList<>(customerMap.values());
     }
 
     @Override
-    public Customer save(Customer customer) {
-        Customer savedCustomer = Customer.builder()
+    public CustomerDto save(CustomerDto customerDto) {
+        CustomerDto savedCustomerDto = CustomerDto.builder()
                 .id(UUID.randomUUID())
                 .updateDate(LocalDateTime.now())
                 .createdDate(LocalDateTime.now())
-                .version(customer.getVersion())
-                .name(customer.getName())
+                .version(customerDto.getVersion())
+                .name(customerDto.getName())
                 .build();
-        customerMap.put(savedCustomer.getId(), savedCustomer);
-        return savedCustomer;
+        customerMap.put(savedCustomerDto.getId(), savedCustomerDto);
+        return savedCustomerDto;
     }
 
     @Override
-    public void update(UUID customerId, Customer customer) {
-        Customer existing = customerMap.get(customerId);
-        existing.setName(customer.getName());
-        existing.setVersion(customer.getVersion());
+    public void update(UUID customerId, CustomerDto customerDto) {
+        CustomerDto existing = customerMap.get(customerId);
+        existing.setName(customerDto.getName());
+        existing.setVersion(customerDto.getVersion());
         customerMap.put(existing.getId(), existing);
     }
 
@@ -79,13 +79,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void patch(UUID customerId, Customer customer) {
-        Customer existing = customerMap.get(customerId);
-        if (StringUtils.hasText(customer.getName())) {
-            existing.setName(customer.getName());
+    public void patch(UUID customerId, CustomerDto customerDto) {
+        CustomerDto existing = customerMap.get(customerId);
+        if (StringUtils.hasText(customerDto.getName())) {
+            existing.setName(customerDto.getName());
         }
-        if(customer.getVersion() != null) {
-            existing.setVersion(customer.getVersion());
+        if(customerDto.getVersion() != null) {
+            existing.setVersion(customerDto.getVersion());
         }
         customerMap.put(existing.getId(), existing);
     }
