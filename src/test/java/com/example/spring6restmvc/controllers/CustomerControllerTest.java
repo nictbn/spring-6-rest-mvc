@@ -124,6 +124,7 @@ class CustomerControllerTest {
         Map<String, Object> customerMap = new HashMap<>();
         customerMap.put("name", "New Name");
 
+        given(customerService.patch(any(), any())).willReturn(Optional.of(CustomerDto.builder().build()));
         mockMvc.perform(patch(CUSTOMER_PATH_ID, customerDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerMap)))
