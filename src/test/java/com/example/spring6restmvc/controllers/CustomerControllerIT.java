@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class CustomerControllerIT {
@@ -97,5 +98,15 @@ class CustomerControllerIT {
         assertThrows(NotFoundException.class, () -> {
             customerController.updateCustomerById(UUID.randomUUID(), CustomerDto.builder().build());
         });
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testDeleteByIdFound() {
+        Customer customer = customerRepository.findAll().get(0);
+        ResponseEntity responseEntity = customerController.deleteCustomerById(customer.getId());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+        assertTrue(customerRepository.findById(customer.getId()).isEmpty());
     }
 }

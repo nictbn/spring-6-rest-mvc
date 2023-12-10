@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class BeerControllerIT {
@@ -106,7 +107,7 @@ class BeerControllerIT {
         Beer beer = beerRepository.findAll().get(0);
         ResponseEntity responseEntity = beerController.deleteById(beer.getId());
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
-        assertThat(beerRepository.findById(beer.getId()).isEmpty());
+        assertTrue(beerRepository.findById(beer.getId()).isEmpty());
     }
 
     @Test
