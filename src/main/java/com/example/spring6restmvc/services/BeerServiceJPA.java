@@ -38,7 +38,13 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public void update(UUID beerId, BeerDto beerDto) {
-
+        beerRepository.findById(beerId).ifPresent(foundBeer -> {
+            foundBeer.setBeerName(beerDto.getBeerName());
+            foundBeer.setBeerStyle(beerDto.getBeerStyle());
+            foundBeer.setUpc(beerDto.getUpc());
+            foundBeer.setPrice(beerDto.getPrice());
+            beerRepository.save(foundBeer);
+        });
     }
 
     @Override
