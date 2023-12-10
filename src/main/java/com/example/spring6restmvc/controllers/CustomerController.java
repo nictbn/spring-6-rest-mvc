@@ -31,7 +31,9 @@ public class CustomerController {
     }
     @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity updateCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody CustomerDto customerDto) {
-        customerService.update(customerId, customerDto);
+        if (customerService.update(customerId, customerDto).isEmpty()) {
+            throw new NotFoundException();
+        }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
