@@ -54,6 +54,8 @@ class BeerControllerIT {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void saveBeerTest() {
         BeerDto beerDto = BeerDto.builder()
                 .beerName("New Beer")
