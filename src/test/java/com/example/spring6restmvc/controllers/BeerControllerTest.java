@@ -129,6 +129,7 @@ class BeerControllerTest {
         Map<String, Object> beerMap = new HashMap<>();
         beerMap.put("beerName", "New Name");
 
+        given(beerService.patch(any(), any())).willReturn(Optional.of(BeerDto.builder().build()));
         mockMvc.perform(patch(BEER_PATH_ID, beerDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
