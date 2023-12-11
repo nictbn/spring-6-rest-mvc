@@ -17,9 +17,14 @@ public class BeerDto {
     @NotNull
     @NotBlank
     private String beerName;
+    @NotNull
     private BeerStyle beerStyle;
+
+    @NotNull
+    @NotBlank
     private String upc;
     private Integer quantityOnHand;
+    @NotNull
     private BigDecimal price;
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;
