@@ -28,4 +28,7 @@ public class Customer {
     private Integer version;
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;
+
+    @Column(length = 255)
+    private String email;
 }
