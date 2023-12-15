@@ -1,5 +1,6 @@
 package com.example.spring6restmvc.services;
 
+import com.example.spring6restmvc.entities.Beer;
 import com.example.spring6restmvc.mappers.BeerMapper;
 import com.example.spring6restmvc.model.BeerDto;
 import com.example.spring6restmvc.repositories.BeerRepository;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,14 +20,24 @@ import java.util.stream.Collectors;
 @Primary
 @RequiredArgsConstructor
 public class BeerServiceJPA implements BeerService {
+    public static final String WILDCARD = "%";
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
     @Override
-    public List<BeerDto> listBeers() {
-        return beerRepository.findAll()
-                .stream()
+    public List<BeerDto> listBeers(String beerName) {
+        List<Beer> beers;
+        if (StringUtils.hasText(beerName)) {
+            beers = listBeersByName(beerName);;
+        } else {
+            beers = beerRepository.findAll();
+        }
+        return beers.stream()
                 .map(beerMapper::beerToBeerDto)
                 .collect(Collectors.toList());
+    }
+
+    List<Beer> listBeersByName(String beerName) {
+        return beerRepository.findAllByBeerNameIsLikeIgnoreCase(WILDCARD + beerName + WILDCARD);
     }
 
     @Override
