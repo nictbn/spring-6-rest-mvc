@@ -8,7 +8,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
-import java.rmi.server.UID;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,6 +39,7 @@ public class Category {
 
     private String description;
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(name = "beer_category", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "beer_id"))
     private Set<Beer> beers = new HashSet<>();
