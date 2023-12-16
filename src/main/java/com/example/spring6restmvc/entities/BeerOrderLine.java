@@ -8,35 +8,39 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.Timestamp;
 import java.util.UUID;
 
-@Builder
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-public class Customer {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class BeerOrderLine {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    // the annotation below stores the id as a string in the db instead of as a binary value
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
-    private String name;
-    @Version
-    private Integer version;
-    @CreationTimestamp
-    private LocalDateTime createdDate;
-    @UpdateTimestamp
-    private LocalDateTime updateDate;
 
-    @Column(length = 255)
-    private String email;
-    @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders = new HashSet<>();
+    @Version
+    private Long version;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp createdDate;
+
+    @UpdateTimestamp
+    @Column(updatable = false)
+    private Timestamp lastModifiedDate;
+
+    private Integer orderQuantity = 0;
+
+    private Integer quantityAllocated = 0;
+
+    public boolean isNew() {
+        return this.id == null;
+    }
 }
