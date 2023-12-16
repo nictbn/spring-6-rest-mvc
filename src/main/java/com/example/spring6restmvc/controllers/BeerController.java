@@ -5,13 +5,13 @@ import com.example.spring6restmvc.model.BeerStyle;
 import com.example.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -54,12 +54,20 @@ public class BeerController {
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
     @GetMapping(BEER_PATH)
-    public List<BeerDto> listBeers(
+    public Page<BeerDto> listBeers(
             @RequestParam(required = false, value = "beerName") String beerName,
             @RequestParam(required = false, value = "beerStyle") BeerStyle beerStyle,
-            @RequestParam(required = false, value = "showInventory") Boolean showInventory
-            ) {
-        return beerService.listBeers(beerName, beerStyle, showInventory);
+            @RequestParam(required = false, value = "showInventory") Boolean showInventory,
+            @RequestParam(required = false, value = "pageNumber")Integer pageNumber,
+            @RequestParam(required = false, value = "pageSize")Integer pageSize) {
+        Page<BeerDto> a = null;
+        try {
+            a = beerService.listBeers(beerName, beerStyle, showInventory, pageNumber, pageSize);
+        } catch (Exception e) {
+            int b = 5;
+        }
+
+        return a;
     }
 
     @GetMapping(BEER_PATH_ID)
