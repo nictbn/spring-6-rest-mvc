@@ -8,7 +8,10 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
+import java.rmi.server.UID;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -17,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BeerOrderLine {
+public class Category {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -35,17 +38,10 @@ public class BeerOrderLine {
     @UpdateTimestamp
     private Timestamp lastModifiedDate;
 
-    private Integer orderQuantity = 0;
+    private String description;
 
-    private Integer quantityAllocated = 0;
+    @ManyToMany
+    @JoinTable(name = "beer_category", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "beer_id"))
+    private Set<Beer> beers = new HashSet<>();
 
-    @ManyToOne
-    private BeerOrder beerOrder;
-
-    @ManyToOne
-    private Beer beer;
-
-    public boolean isNew() {
-        return this.id == null;
-    }
 }
