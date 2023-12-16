@@ -37,6 +37,8 @@ public class Customer {
 
     @Column(length = 255)
     private String email;
+
+    @Builder.Default
     @OneToMany(mappedBy = "customer")
     private Set<BeerOrder> beerOrders = new HashSet<>();
 }

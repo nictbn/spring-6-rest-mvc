@@ -29,14 +29,15 @@ class BeerOrderRepositoryTest {
         testBeer = beerRepository.findAll().get(0);
     }
 
-    @Transactional
     @Rollback
+    @Transactional
     @Test
     void testBeerOrders() {
         BeerOrder beerOrder = BeerOrder.builder()
                 .customerRef("Test order")
+                .customer(testCustomer)
                 .build();
-        BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
+        BeerOrder savedBeerOrder = beerOrderRepository.save(beerOrder);
         System.out.println(savedBeerOrder.getCustomerRef());
     }
 
