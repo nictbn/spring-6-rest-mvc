@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static com.example.spring6restmvc.controllers.BeerController.BEER_PATH;
@@ -65,6 +66,7 @@ class BeerControllerTest {
         given(beerService.getBeerById(testBeerDto.getId())).willReturn(Optional.of(testBeerDto));
 
         mockMvc.perform(get(BEER_PATH_ID, testBeerDto.getId())
+                        .with(httpBasic("user1", "password"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -78,6 +80,7 @@ class BeerControllerTest {
         doReturn(beerPage).when(beerService).listBeers(any(), any(), any(), any(), any());
 
         mockMvc.perform(get(BEER_PATH)
+                        .with(httpBasic("user1", "password"))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -147,7 +150,8 @@ class BeerControllerTest {
     @Test
     void getBeerByIdNotFound() throws Exception {
         given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
-        mockMvc.perform(get(BEER_PATH_ID, UUID.randomUUID()))
+        mockMvc.perform(get(BEER_PATH_ID, UUID.randomUUID())
+                        .with(httpBasic("user1", "password")))
                 .andExpect(status().isNotFound());
     }
 
