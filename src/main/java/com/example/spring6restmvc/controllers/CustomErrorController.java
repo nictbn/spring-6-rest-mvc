@@ -1,7 +1,6 @@
 package com.example.spring6restmvc.controllers;
 
 import jakarta.validation.ConstraintViolationException;
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

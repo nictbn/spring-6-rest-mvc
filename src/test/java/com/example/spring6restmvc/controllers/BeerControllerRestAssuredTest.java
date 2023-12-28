@@ -1,7 +1,11 @@
 package com.example.spring6restmvc.controllers;
 
+import com.atlassian.oai.validator.OpenApiInteractionValidator;
+import com.atlassian.oai.validator.restassured.OpenApiValidationFilter;
+import com.atlassian.oai.validator.whitelist.ValidationErrorsWhitelist;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 
+import static com.atlassian.oai.validator.whitelist.rule.WhitelistRules.messageHasKey;
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -21,6 +26,7 @@ import static io.restassured.RestAssured.given;
 @Import(BeerControllerRestAssuredTest.TestConfig.class)
 @ComponentScan(basePackages = "com.example.spring6restmvc")
 public class BeerControllerRestAssuredTest {
+    static OpenApiValidationFilter filter;
 
     @Configuration
     public static class TestConfig {
@@ -34,6 +40,15 @@ public class BeerControllerRestAssuredTest {
     @LocalServerPort
     Integer localPort;
 
+    @BeforeAll
+    static void loadSpec() {
+        filter = new OpenApiValidationFilter(OpenApiInteractionValidator
+                .createForSpecificationUrl("oa3.yml")
+                .withWhitelist(ValidationErrorsWhitelist.create().withRule("Ignore date format",
+                        messageHasKey("validation.response.body.schema.format.date-time")))
+                .build());
+    }
+
     @BeforeEach
     void setUp() {
         RestAssured.baseURI = "http://localhost";
@@ -44,6 +59,7 @@ public class BeerControllerRestAssuredTest {
     void testListBeers() {
         given().contentType(ContentType.JSON)
                 .when()
+                .filter(filter)
                 .get("/api/v1/beer")
                 .then()
                 .assertThat().statusCode(200);
